@@ -1,0 +1,13 @@
+{
+  "name": "wiki-discord-bot",
+  "version": "1.0.0",
+  "description": "Discord forum form bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.26.3",
+    "express": "^5.2.1"
+  }
+}
