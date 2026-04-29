@@ -1,0 +1,19 @@
+app = "suicat9625"
+
+[build]
+  builder = "heroku/buildpacks:20"
+
+[env]
+  PORT = "3000"
+
+[[services]]
+  internal_port = 3000
+  protocol = "tcp"
+  auto_stop_machines = false
+  auto_start_machines = true
+
+  [[services.ports]]
+    port = 80
+
+  [[services.ports]]
+    port = 443
