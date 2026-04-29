@@ -54,6 +54,16 @@ client.on(Events.MessageCreate, async (msg) => {
       console.error("reaction error:", err);
     }
   }
+
+  const requireFileChannel = "1498636142654787674";
+
+  if (msg.channel.id === requireFileChannel && msg.attachments.size === 0) {
+    try {
+      await msg.delete();
+    } catch (err) {
+      console.error(err);
+    }
+  }
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
