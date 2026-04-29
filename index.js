@@ -62,6 +62,11 @@ client.on(Events.MessageCreate, async (msg) => {
       await msg.delete();
     } catch (err) {
       console.error(err);
+    } finally {
+      await msg.channel.send({
+        content: "📌 **更新済み**",
+        components: [row],
+      });
     }
   }
 });
