@@ -64,9 +64,9 @@ client.on(Events.MessageCreate, async (msg) => {
     }
   });
 
-  const requireFileChannel = "1498636142654787674";
+  const requireFileChannels = ["1498636142654787674","1498996831894503597","1498996989181038685"];
 
-  if (msg.channel.id === requireFileChannel && msg.attachments.size === 0) {
+  if (requireFileChannels.includes(msg.channel.id) && msg.attachments.size === 0) {
     try {
       await msg.delete();
     } catch (err) {
