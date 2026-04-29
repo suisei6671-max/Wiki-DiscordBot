@@ -24,6 +24,9 @@ client.once("ready", () => {
 });
 
 client.on(Events.MessageCreate, async (msg) => {
+  if (msg.author.bot) return;
+
+  // 📌 !setup
   if (msg.content === "!setup") {
     const { ButtonBuilder, ButtonStyle } = require("discord.js");
 
@@ -38,6 +41,15 @@ client.on(Events.MessageCreate, async (msg) => {
       content: "📌 **wiki編集依頼はこちらから**",
       components: [row],
     });
+  }
+
+  // ⭐ここ追加（オートリアクション）
+  if (msg.channel.id === "1498624183222009947") {
+    try {
+      await msg.react("1454758250200174675");
+    } catch (err) {
+      console.error("reaction error:", err);
+    }
   }
 });
 
