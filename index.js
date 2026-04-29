@@ -100,46 +100,47 @@ client.on(Events.InteractionCreate, async (interaction) => {
   }
 
   if (interaction.isChatInputCommand() && interaction.commandName === "close") {
-
-  const REQUIRED_ROLE = "1456504654799044739";
-  const RESOLVED_TAG = "1498911991018946660";
-
-  const member = await interaction.guild.members.fetch(interaction.user.id);
-
-  // 権限チェック
-  if (!member.roles.cache.has(REQUIRED_ROLE)) {
-    return interaction.reply({
-      content: "❌ 権限がありません",
-      flags: 64
-    });
-  }
-
-  // スレッドチェック
-  if (!interaction.channel.isThread()) {
-    return interaction.reply({
-      content: "❌ スレッド内でのみ使用できます",
-      flags: 64
-    });
-  }
-
-  const thread = interaction.channel;
-
-  // 現在のタグ取得
-  const currentTags = thread.appliedTags ?? [];
-
-  // 既に入ってない場合だけ追加
-  const newTags = currentTags.includes(RESOLVED_TAG)
-    ? currentTags
-    : [...currentTags, RESOLVED_TAG];
-
-  await thread.setAppliedTags([RESOLVED_TAG]);
-  await thread.setArchived(true);
   
-  return interaction.reply({
-    content: "✅ クローズしました",
-    flags: 64
-  });
-}
+    const REQUIRED_ROLE = "1456504654799044739";
+    const RESOLVED_TAG = "1498911991018946660";
+  
+    const member = await interaction.guild.members.fetch(interaction.user.id);
+  
+    if (!member.roles.cache.has(REQUIRED_ROLE)) {
+      return interaction.reply({
+        content: "❌ 権限がありません",
+        flags: 64
+      });
+    }
+  
+    if (!interaction.channel.isThread()) {
+      return interaction.reply({
+        content: "❌ スレッド内でのみ使用できます",
+        flags: 64
+      });
+    }
+  
+    await interaction.deferReply({ flags: 64 });
+  
+    const thread = interaction.channel;
+  
+    try {
+      const currentTags = thread.appliedTags ?? [];
+  
+      const newTags = currentTags.includes(RESOLVED_TAG)
+        ? currentTags
+        : [...currentTags, RESOLVED_TAG];
+  
+      await thread.setAppliedTags(newTags);
+      await thread.setArchived(true);
+  
+      await interaction.editReply("✅ クローズしました");
+  
+    } catch (err) {
+      console.error(err);
+      await interaction.editReply("❌ エラーが発生しました");
+    }
+  }
 
   if (interaction.isModalSubmit() && interaction.customId.startsWith("form_")) {
     await interaction.deferUpdate();
