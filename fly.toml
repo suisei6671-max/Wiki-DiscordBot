@@ -4,7 +4,7 @@ app = "suicat9625"
   builder = "heroku/buildpacks:20"
 
 [env]
-  PORT = "3000"
+  NODE_VERSION = "20"
 
 [[services]]
   internal_port = 3000
@@ -15,3 +15,5 @@ app = "suicat9625"
 
   [[services.ports]]
     port = 443
+
+
