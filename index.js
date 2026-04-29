@@ -132,12 +132,9 @@ client.on(Events.InteractionCreate, async (interaction) => {
     ? currentTags
     : [...currentTags, RESOLVED_TAG];
 
-  // タグ更新
-  await thread.setAppliedTags(newTags);
-
-  // アーカイブ
+  await thread.setAppliedTags([RESOLVED_TAG]);
   await thread.setArchived(true);
-
+  
   return interaction.reply({
     content: "✅ クローズしました",
     flags: 64
