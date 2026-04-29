@@ -106,6 +106,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
   
     const member = await interaction.guild.members.fetch(interaction.user.id);
   
+    // 権限チェック
     if (!member.roles.cache.has(REQUIRED_ROLE)) {
       return interaction.reply({
         content: "❌ 権限がありません",
@@ -113,6 +114,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
       });
     }
   
+    // スレッドチェック
     if (!interaction.channel.isThread()) {
       return interaction.reply({
         content: "❌ スレッド内でのみ使用できます",
@@ -120,12 +122,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
       });
     }
   
-    // 🔥最初に必ず確保
     await interaction.deferReply({ flags: 64 });
   
-    try {
-      const thread = interaction.channel;
+    const thread = interaction.channel;
   
+    try {
+      // 現在タグ保持
       const currentTags = thread.appliedTags ?? [];
   
       const newTags = currentTags.includes(RESOLVED_TAG)
@@ -133,15 +135,18 @@ client.on(Events.InteractionCreate, async (interaction) => {
         : [...currentTags, RESOLVED_TAG];
   
       await thread.setAppliedTags(newTags);
+  
+      // 🔥① ロック（重要）
+      await thread.setLocked(true);
+  
+      // 🔥② アーカイブ
       await thread.setArchived(true);
   
-      // 🔥ここで1回だけ返す
-      await interaction.editReply("✅ クローズしました");
+      await interaction.editReply("🔒 クローズ＆ロックしました");
   
     } catch (err) {
       console.error("close error:", err);
   
-      // ここ超重要：失敗しても1回だけ返す
       if (interaction.deferred || interaction.replied) {
         await interaction.editReply("❌ エラーが発生しました");
       } else {
