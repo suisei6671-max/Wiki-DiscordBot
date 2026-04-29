@@ -1,3 +1,4 @@
+console.log("=== STARTING APP ===");
 const express = require("express");
 const app = express();
 
