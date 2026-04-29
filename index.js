@@ -120,11 +120,12 @@ client.on(Events.InteractionCreate, async (interaction) => {
       });
     }
   
+    // 🔥最初に必ず確保
     await interaction.deferReply({ flags: 64 });
   
-    const thread = interaction.channel;
-  
     try {
+      const thread = interaction.channel;
+  
       const currentTags = thread.appliedTags ?? [];
   
       const newTags = currentTags.includes(RESOLVED_TAG)
@@ -134,11 +135,21 @@ client.on(Events.InteractionCreate, async (interaction) => {
       await thread.setAppliedTags(newTags);
       await thread.setArchived(true);
   
+      // 🔥ここで1回だけ返す
       await interaction.editReply("✅ クローズしました");
   
     } catch (err) {
-      console.error(err);
-      await interaction.editReply("❌ エラーが発生しました");
+      console.error("close error:", err);
+  
+      // ここ超重要：失敗しても1回だけ返す
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply("❌ エラーが発生しました");
+      } else {
+        await interaction.reply({
+          content: "❌ エラーが発生しました",
+          flags: 64
+        });
+      }
     }
   }
 
