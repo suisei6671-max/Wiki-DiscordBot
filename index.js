@@ -46,7 +46,10 @@ client.on(Events.MessageCreate, async (msg) => {
   // ⭐ここ追加（オートリアクション）
   if (msg.channel.id === "1498624183222009947") {
     try {
-      await msg.react("1454758250200174675");
+      await Promise.all([
+        msg.react("1454758250200174675"),
+        msg.react("1458748133986271283"),
+      ]);
     } catch (err) {
       console.error("reaction error:", err);
     }
