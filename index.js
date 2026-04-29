@@ -106,32 +106,41 @@ client.on(Events.InteractionCreate, async (interaction) => {
 
   const member = await interaction.guild.members.fetch(interaction.user.id);
 
-  // ロールチェック
+  // 権限チェック
   if (!member.roles.cache.has(REQUIRED_ROLE)) {
     return interaction.reply({
       content: "❌ 権限がありません",
-      ephemeral: true
+      flags: 64
     });
   }
 
-  // チャンネルチェック（スレッドのみ）
+  // スレッドチェック
   if (!interaction.channel.isThread()) {
     return interaction.reply({
-      content: "❌ このコマンドはスレッド内でのみ使用できます",
-      ephemeral: true
+      content: "❌ スレッド内でのみ使用できます",
+      flags: 64
     });
   }
 
   const thread = interaction.channel;
 
-  // フォーラムタグ追加 + クローズ
-  await thread.setAppliedTags([RESOLVED_TAG]);
+  // 現在のタグ取得
+  const currentTags = thread.appliedTags ?? [];
 
+  // 既に入ってない場合だけ追加
+  const newTags = currentTags.includes(RESOLVED_TAG)
+    ? currentTags
+    : [...currentTags, RESOLVED_TAG];
+
+  // タグ更新
+  await thread.setAppliedTags(newTags);
+
+  // アーカイブ
   await thread.setArchived(true);
 
   return interaction.reply({
     content: "✅ クローズしました",
-    ephemeral: true
+    flags: 64
   });
 }
 
