@@ -1,6 +1,7 @@
 app = "suicat9625"
 
-[build]
+[env]
+PORT = "3000"
 
 [[services]]
   internal_port = 3000
@@ -8,3 +9,6 @@ app = "suicat9625"
 
   [[services.ports]]
     port = 80
+
+  [[services.ports]]
+    port = 443
