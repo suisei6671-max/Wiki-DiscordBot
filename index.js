@@ -99,6 +99,42 @@ client.on(Events.InteractionCreate, async (interaction) => {
     return;
   }
 
+  if (interaction.isChatInputCommand() && interaction.commandName === "close") {
+
+  const REQUIRED_ROLE = "1456504654799044739";
+  const RESOLVED_TAG = "1498911991018946660";
+
+  const member = await interaction.guild.members.fetch(interaction.user.id);
+
+  // ロールチェック
+  if (!member.roles.cache.has(REQUIRED_ROLE)) {
+    return interaction.reply({
+      content: "❌ 権限がありません",
+      ephemeral: true
+    });
+  }
+
+  // チャンネルチェック（スレッドのみ）
+  if (!interaction.channel.isThread()) {
+    return interaction.reply({
+      content: "❌ このコマンドはスレッド内でのみ使用できます",
+      ephemeral: true
+    });
+  }
+
+  const thread = interaction.channel;
+
+  // フォーラムタグ追加 + クローズ
+  await thread.setAppliedTags([RESOLVED_TAG]);
+
+  await thread.setArchived(true);
+
+  return interaction.reply({
+    content: "✅ クローズしました",
+    ephemeral: true
+  });
+}
+
   if (interaction.isModalSubmit() && interaction.customId.startsWith("form_")) {
     await interaction.deferUpdate();
     const forum = await client.channels.fetch(FORUM_ID);
