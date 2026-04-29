@@ -43,17 +43,25 @@ client.on(Events.MessageCreate, async (msg) => {
     });
   }
 
-  // ⭐ここ追加（オートリアクション）
-  if (msg.channel.id === "1498624183222009947") {
+  const autoReact = {
+    "1498624183222009947":["1454758250200174675","1458748133986271283"],
+    "1498636367784185867":["1456978528632574035"]
+  };
+
+  client.on("messageCreate", async msg => {
+    if (msg.author.bot) return;
+  
+    const reacts = autoReact[msg.channel.id];
+    if (!reacts) return; // このチャンネルは対象外
+  
     try {
-      await Promise.all([
-        msg.react("1454758250200174675"),
-        msg.react("1458748133986271283"),
-      ]);
+      await Promise.all(
+        reacts.map(e => msg.react(e))
+      );
     } catch (err) {
       console.error("reaction error:", err);
     }
-  }
+  });
 
   const requireFileChannel = "1498636142654787674";
 
